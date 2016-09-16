@@ -121,7 +121,7 @@ namespace DevConBot.Dialogs
         public async Task ProcessAgreements(IDialogContext context, LuisResult result)
         {
             var DateRange = "month";
-            var Section = "all";
+            var Section = "common";
 
             EntityRecommendation entityContainer;
             if (result.TryFindEntity("section", out entityContainer))
@@ -134,7 +134,7 @@ namespace DevConBot.Dialogs
                 DateRange = entityContainer.Entity;
             }
 
-            var message = $"Информация по закупкам. Секция: {Section}. Период: {DateRange}.";
+            var message = $"Информация по договорам. Секция: {Section}. Период: {DateRange}.";
             await context.PostAsync(message, "ru-RU");
 
             context.Wait(MessageReceived);
