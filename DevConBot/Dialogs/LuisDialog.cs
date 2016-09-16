@@ -1,4 +1,6 @@
 ﻿using DevConBot.BingTranslator;
+using DevConBot.BotApiClient;
+using DevConBot.BotApiClient.Contracts;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
@@ -96,19 +98,21 @@ namespace DevConBot.Dialogs
         [LuisIntent("getPurchases")]
         public async Task ProcessPurchases(IDialogContext context, LuisResult result)
         {
-
+            var filter = new FilterModel();
             var DateRange = "month";
-            var Section= "all";
+            var Section = "all";
 
             EntityRecommendation entityContainer;
             if (result.TryFindEntity("section", out entityContainer))
             {
                 Section = entityContainer.Entity;
+                filter.Sections = IntentEntryHelper.GetSection(entityContainer.Entity);
             }
 
             if (result.TryFindEntity("dateRange", out entityContainer))
             {
                 DateRange = entityContainer.Entity;
+                filter.Range = IntentEntryHelper.GetDateRange(entityContainer.Entity);
             }
 
             var message = $"Информация по закупкам. Секция: {Section}. Период: {DateRange}.";
@@ -120,6 +124,7 @@ namespace DevConBot.Dialogs
         [LuisIntent("getAgreements")]
         public async Task ProcessAgreements(IDialogContext context, LuisResult result)
         {
+            var filter = new FilterModel();
             var DateRange = "month";
             var Section = "common";
 
@@ -127,11 +132,13 @@ namespace DevConBot.Dialogs
             if (result.TryFindEntity("section", out entityContainer))
             {
                 Section = entityContainer.Entity;
+                filter.Sections = IntentEntryHelper.GetSection(entityContainer.Entity);
             }
 
             if (result.TryFindEntity("dateRange", out entityContainer))
             {
                 DateRange = entityContainer.Entity;
+                filter.Range = IntentEntryHelper.GetDateRange(entityContainer.Entity);
             }
 
             var message = $"Информация по договорам. Секция: {Section}. Период: {DateRange}.";
@@ -151,7 +158,7 @@ namespace DevConBot.Dialogs
 
             var baseLuisText = await base.GetLuisQueryTextAsync(context, message);
 
-            if ( message.Locale != "en-US")
+            if (message.Locale != "en-US")
             {
                 try
                 {
