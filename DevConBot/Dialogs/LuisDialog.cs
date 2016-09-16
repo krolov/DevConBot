@@ -39,9 +39,103 @@ namespace DevConBot.Dialogs
                 "Привет! Чем могу быть полезен?"
             };
 
-            var message = messages[(new Random()).Next(messages.Count() - 1)];
+            var message = messages[(new Random()).Next(messages.Count())];
             await context.PostAsync(message, "ru-RU");
             //await context.PostWithTranslationAsync(message, "en-US", Thread.CurrentThread.CurrentCulture.Name);
+
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("bye")]
+        public async Task ProcessBye(IDialogContext context, LuisResult result)
+        {
+            var c = Thread.CurrentThread.CurrentCulture;
+
+            var messages = new string[]
+            {
+                "Пока!",
+                "До новых встреч!"
+            };
+
+            var message = messages[(new Random()).Next(messages.Count())];
+            await context.PostAsync(message, "ru-RU");
+            //await context.PostWithTranslationAsync(message, "en-US", Thread.CurrentThread.CurrentCulture.Name);
+
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("thank")]
+        public async Task ProcessThank(IDialogContext context, LuisResult result)
+        {
+            var c = Thread.CurrentThread.CurrentCulture;
+
+            var messages = new string[]
+            {
+                "Всегда рад помочь!",
+                "Шутка про пожалуйста."
+            };
+
+            var message = messages[(new Random()).Next(messages.Count())];
+            await context.PostAsync(message, "ru-RU");
+            //await context.PostWithTranslationAsync(message, "en-US", Thread.CurrentThread.CurrentCulture.Name);
+
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("help")]
+        public async Task ProcessHelp(IDialogContext context, LuisResult result)
+        {
+            var c = Thread.CurrentThread.CurrentCulture;
+
+            var message = "Пока я умею только здороваться и показывать вот этот блок помощи";
+            await context.PostAsync(message, "ru-RU");
+
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("getPurchases")]
+        public async Task ProcessPurchases(IDialogContext context, LuisResult result)
+        {
+
+            var DateRange = "month";
+            var Section= "all";
+
+            EntityRecommendation entityContainer;
+            if (result.TryFindEntity("section", out entityContainer))
+            {
+                Section = entityContainer.Entity;
+            }
+
+            if (result.TryFindEntity("dateRange", out entityContainer))
+            {
+                DateRange = entityContainer.Entity;
+            }
+
+            var message = $"Информация по закупкам. Секция: {Section}. Период: {DateRange}.";
+            await context.PostAsync(message, "ru-RU");
+
+            context.Wait(MessageReceived);
+        }
+
+        [LuisIntent("getAgreements")]
+        public async Task ProcessAgreements(IDialogContext context, LuisResult result)
+        {
+            var DateRange = "month";
+            var Section = "all";
+
+            EntityRecommendation entityContainer;
+            if (result.TryFindEntity("section", out entityContainer))
+            {
+                Section = entityContainer.Entity;
+            }
+
+            if (result.TryFindEntity("dateRange", out entityContainer))
+            {
+                DateRange = entityContainer.Entity;
+            }
+
+            var message = $"Информация по закупкам. Секция: {Section}. Период: {DateRange}.";
+            await context.PostAsync(message, "ru-RU");
 
             context.Wait(MessageReceived);
         }
