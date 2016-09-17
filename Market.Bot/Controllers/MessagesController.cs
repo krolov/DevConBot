@@ -27,7 +27,7 @@ namespace Market.Bot
                 {
                     HandleSystemMessage(activity);
                 }
-                else if (activity == null || activity.GetActivityType() == ActivityTypes.Message)
+                else if (activity != null && activity.GetActivityType() == ActivityTypes.Message)
                 {
                     await Conversation.SendAsync(activity, () => new LuisDialog());
                 }

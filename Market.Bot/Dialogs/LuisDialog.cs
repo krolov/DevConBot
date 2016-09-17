@@ -19,6 +19,9 @@ namespace Market.Bot.Dialogs
     [LuisModel("84bc6ef0-800b-4dc0-816a-36162c91fac1", "706f723d09f947bab1efd62c4ee2c0f0")]
     public class LuisDialog : LuisDialog<object>
     {
+
+        private readonly IBotApiClient _botApiClient = new BotApiClient.BotApiClient();
+
         [LuisIntent("")]
         public async Task ProcessNone(IDialogContext context, LuisResult result)
         {
@@ -116,6 +119,7 @@ namespace Market.Bot.Dialogs
             }
 
             var message = $"Информация по закупкам. Секция: {Section}. Период: {DateRange}.";
+            var info = await _botApiClient.GetPurchasesAsync(filter);
             await context.PostAsync(message, "ru-RU");
 
             context.Wait(MessageReceived);
@@ -142,6 +146,9 @@ namespace Market.Bot.Dialogs
             }
 
             var message = $"Информация по договорам. Секция: {Section}. Период: {DateRange}.";
+
+            var info = await _botApiClient.GetOrdersAsync(filter);
+
             await context.PostAsync(message, "ru-RU");
 
             context.Wait(MessageReceived);
