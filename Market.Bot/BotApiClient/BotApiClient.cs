@@ -44,10 +44,6 @@ namespace Market.Bot.BotApiClient
             var result = await
                 (BotApiHost + "Order/Get").SetQueryParams(filter)
                 .WithHeaders(new { authorization = "bearer " + key }).GetJsonAsync();
-            //  var serializer = new JavaScriptSerializer();
-            //  var jsonString = serializer.Serialize(result);
-            //  return JsonConvert.DeserializeObject<StatisticResult>(jsonString);
-
             StatisticResult item = Convert(result, typeof(StatisticResult));
             return item;
         }
@@ -59,11 +55,6 @@ namespace Market.Bot.BotApiClient
                 (BotApiHost + "Purchase/Get")
                 .SetQueryParams(filter)
                 .WithHeaders(new { authorization = "bearer " + key }).GetJsonAsync();
-            //  var serializer = new JavaScriptSerializer();
-            //  var jsonString = serializer.Serialize(result);
-            //   return JsonConvert.DeserializeObject<StatisticResult>(jsonString);
-
-
             return new StatisticResult() { TotalItems = result.TotalItems, TotalSum = result.TotalSum };
 
         }

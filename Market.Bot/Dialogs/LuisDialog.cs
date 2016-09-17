@@ -102,6 +102,8 @@ namespace Market.Bot.Dialogs
         public async Task ProcessPurchases(IDialogContext context, LuisResult result)
         {
             var filter = new FilterModel();
+            filter.Range = BotApiClient.Contracts.DateRange.month;
+            filter.Sections = new List<Sections> { Sections.Volgograd };
             var DateRange = "month";
             var Section = "all";
 
@@ -118,9 +120,11 @@ namespace Market.Bot.Dialogs
                 filter.Range = IntentEntryHelper.GetDateRange(entityContainer.Entity);
             }
 
-            var message = $"Информация по закупкам. Секция: {Section}. Период: {DateRange}.";
+            var message = $"Информация о закупках {filter.Sections.FirstOrDefault().GetDescription()} {filter.Range.GetDescription()}. ";
+
             var info = await _botApiClient.GetPurchasesAsync(filter);
-            await context.PostAsync(message, "ru-RU");
+            var infoMessage = $"Общее количество закупок {info.TotalItems} на сумму {info.TotalSum}";
+            await context.PostAsync(message + infoMessage, "ru-RU");
 
             context.Wait(MessageReceived);
         }
@@ -129,6 +133,8 @@ namespace Market.Bot.Dialogs
         public async Task ProcessAgreements(IDialogContext context, LuisResult result)
         {
             var filter = new FilterModel();
+            filter.Range = BotApiClient.Contracts.DateRange.month;
+            filter.Sections = new List<Sections> { Sections.Volgograd };
             var DateRange = "month";
             var Section = "common";
 
@@ -145,10 +151,11 @@ namespace Market.Bot.Dialogs
                 filter.Range = IntentEntryHelper.GetDateRange(entityContainer.Entity);
             }
 
-            var message = $"Информация по договорам. Секция: {Section}. Период: {DateRange}.";
+            var message = $"Информация {filter.Sections.FirstOrDefault().GetDescription()} {filter.Range.GetDescription()}. ";
 
             var info = await _botApiClient.GetOrdersAsync(filter);
-
+            var infoMessage = $"Общее количество заключеных договоров {info.TotalItems} на сумму {info.TotalSum}";
+            await context.PostAsync(message + infoMessage, "ru-RU");
             await context.PostAsync(message, "ru-RU");
 
             context.Wait(MessageReceived);
