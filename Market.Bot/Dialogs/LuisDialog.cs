@@ -103,29 +103,26 @@ namespace Market.Bot.Dialogs
         {
             var filter = new FilterModel();
             filter.Range = BotApiClient.Contracts.DateRange.month;
-            filter.Sections = new List<Sections> { Sections.Volgograd };
-            var DateRange = "month";
-            var Section = "all";
+            filter.Sections = new List<Sections>();
 
             EntityRecommendation entityContainer;
             if (result.TryFindEntity("section", out entityContainer))
             {
-                Section = entityContainer.Entity;
                 filter.Sections = IntentEntryHelper.GetSection(entityContainer.Entity);
             }
 
             if (result.TryFindEntity("dateRange", out entityContainer))
             {
-                DateRange = entityContainer.Entity;
                 filter.Range = IntentEntryHelper.GetDateRange(entityContainer.Entity);
             }
 
-            var message = $"Информация о закупках {filter.Sections.FirstOrDefault().GetDescription()} {filter.Range.GetDescription()}. ";
+            var section = filter.Sections.Count > 0 ? filter.Sections.FirstOrDefault().GetDescription() : "по всем регионам";
+
+            var message = $"Информация о закупках {section} {filter.Range.GetDescription()}. ";
 
             var info = await _botApiClient.GetPurchasesAsync(filter);
             var infoMessage = $"Общее количество закупок {info.TotalItems} на сумму {info.TotalSum}";
             await context.PostAsync(message + infoMessage, "ru-RU");
-
             context.Wait(MessageReceived);
         }
 
@@ -134,30 +131,26 @@ namespace Market.Bot.Dialogs
         {
             var filter = new FilterModel();
             filter.Range = BotApiClient.Contracts.DateRange.month;
-            filter.Sections = new List<Sections> { Sections.Volgograd };
-            var DateRange = "month";
-            var Section = "common";
+            filter.Sections = new List<Sections>();
+
 
             EntityRecommendation entityContainer;
             if (result.TryFindEntity("section", out entityContainer))
             {
-                Section = entityContainer.Entity;
                 filter.Sections = IntentEntryHelper.GetSection(entityContainer.Entity);
             }
 
             if (result.TryFindEntity("dateRange", out entityContainer))
             {
-                DateRange = entityContainer.Entity;
                 filter.Range = IntentEntryHelper.GetDateRange(entityContainer.Entity);
             }
+            var section = filter.Sections.Count > 0 ? filter.Sections.FirstOrDefault().GetDescription() : "по всем регионам";
 
-            var message = $"Информация {filter.Sections.FirstOrDefault().GetDescription()} {filter.Range.GetDescription()}. ";
+            var message = $"Информация о договорах {section} {filter.Range.GetDescription()}. ";
 
             var info = await _botApiClient.GetOrdersAsync(filter);
             var infoMessage = $"Общее количество заключеных договоров {info.TotalItems} на сумму {info.TotalSum}";
             await context.PostAsync(message + infoMessage, "ru-RU");
-            await context.PostAsync(message, "ru-RU");
-
             context.Wait(MessageReceived);
         }
 
