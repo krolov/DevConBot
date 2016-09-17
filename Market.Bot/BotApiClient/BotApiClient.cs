@@ -9,14 +9,21 @@ using Microsoft.Bot.Builder.Internals.Fibers;
 using System.Threading.Tasks;
 using Flurl;
 using Newtonsoft.Json;
+using System.Web.Script.Serialization;
 
 namespace Market.Bot.BotApiClient
 {
     public class BotApiClient : IBotApiClient
     {
+        private static dynamic Convert(dynamic source, Type dest)
+        {
+            return System.Convert.ChangeType(source, dest);
+        }
+
         const string BotApiUserName = "otc-market-bot";
         const string BotApiPassword = "otc-market-bot";
         const string BotApiHost = "http://api.market.stable.otc.ru/";
+        //const string BotApiHost = "http://webaggregator.lh/";
 
         private async Task<string> getToken()
         {
@@ -37,7 +44,12 @@ namespace Market.Bot.BotApiClient
             var result = await
                 (BotApiHost + "Order/Get").SetQueryParams(filter)
                 .WithHeaders(new { authorization = "bearer " + key }).GetJsonAsync();
-            return JsonConvert.DeserializeObject<StatisticResult>(result);
+            //  var serializer = new JavaScriptSerializer();
+            //  var jsonString = serializer.Serialize(result);
+            //  return JsonConvert.DeserializeObject<StatisticResult>(jsonString);
+
+            StatisticResult item = Convert(result, typeof(StatisticResult));
+            return item;
         }
 
         public async Task<StatisticResult> GetPurchasesAsync(FilterModel filter)
@@ -47,7 +59,13 @@ namespace Market.Bot.BotApiClient
                 (BotApiHost + "Purchase/Get")
                 .SetQueryParams(filter)
                 .WithHeaders(new { authorization = "bearer " + key }).GetJsonAsync();
-            return JsonConvert.DeserializeObject<StatisticResult>(result);
+            //  var serializer = new JavaScriptSerializer();
+            //  var jsonString = serializer.Serialize(result);
+            //   return JsonConvert.DeserializeObject<StatisticResult>(jsonString);
+
+
+            return new StatisticResult() { TotalItems = result.TotalItems, TotalSum = result.TotalSum };
+
         }
     }
 }
