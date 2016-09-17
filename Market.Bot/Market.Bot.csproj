@@ -146,6 +146,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\devcon-school-bot1 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\OtcMarketBot - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

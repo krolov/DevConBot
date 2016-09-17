@@ -44,8 +44,7 @@ namespace Market.Bot.BotApiClient
             var result = await
                 (BotApiHost + "Order/Get").SetQueryParams(filter)
                 .WithHeaders(new { authorization = "bearer " + key }).GetJsonAsync();
-            StatisticResult item = Convert(result, typeof(StatisticResult));
-            return item;
+            return new StatisticResult() { TotalItems = result.TotalItems, TotalSum = result.TotalSum };
         }
 
         public async Task<StatisticResult> GetPurchasesAsync(FilterModel filter)
